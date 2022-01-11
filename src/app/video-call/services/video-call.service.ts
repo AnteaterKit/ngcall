@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OpenVidu, Publisher, Session, StreamEvent, StreamManager } from 'openvidu-browser';
+import { OpenVidu, Publisher, Session, StreamEvent, StreamManager, Subscriber } from 'openvidu-browser';
 import { join } from 'path';
 import { BehaviorSubject, catchError, from, of, switchMap, tap } from 'rxjs';
 
@@ -60,7 +60,9 @@ export class VideoCallService {
 
   subscribeSessionEvents() {
     this.session.on('streamCreated', (event: any) => {
-   
+      const subscriber: Subscriber = this.session.subscribe(event.stream, '');
+      this.users$.value.push(subscriber);
+      this.users$.next([...this.users$.value]);
     });
 
     this.session.on('streamDestroyed', (event: any) => {

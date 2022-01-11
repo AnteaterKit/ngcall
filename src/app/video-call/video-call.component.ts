@@ -9,8 +9,7 @@ import { VideoCallService } from './services/video-call.service';
   styleUrls: ['./video-call.component.scss']
 })
 export class VideoCallComponent implements OnInit {
-
-  users = [1, 2, 3, 4, 5, 6];
+  users: StreamManager[] = [];
   currentUser: StreamManager  | undefined = undefined;
   constructor(private videoCallService: VideoCallService) { }
 
@@ -25,6 +24,14 @@ export class VideoCallComponent implements OnInit {
       filter(x => !!x),
       tap(x => {
         this.currentUser = x;
+      })
+    ).subscribe();
+
+    this.videoCallService.users$
+    .pipe(
+      filter(x => !!x),
+      tap(x => {
+        this.users = x;
       })
     ).subscribe();
   }
