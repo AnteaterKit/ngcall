@@ -14,4 +14,7 @@ export class VideoCallComponent implements OnInit {
   ngOnInit() {
   }
 
+  join() {
+    this.videoCallService.join();
+  }
 }
