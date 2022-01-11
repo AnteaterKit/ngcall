@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { StreamManager } from 'openvidu-browser';
 
 @Component({
   selector: 'app-ov-video',
@@ -7,9 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OvVideoComponent implements OnInit {
 
-  constructor() { }
+  @ViewChild('videoElement') elementRef: ElementRef | undefined;
 
-  ngOnInit() {
+  _streamManager: StreamManager | undefined;
+
+  ngOnInit(): void {
+  }
+
+  ngAfterViewInit() {
+    this._streamManager!.addVideoElement(this.elementRef!.nativeElement);
+  }
+
+  @Input()
+  set stream(streamManager: StreamManager) {
+    this._streamManager = streamManager;
+    if (!!this.elementRef) {
+      this._streamManager.addVideoElement(this.elementRef.nativeElement);
+    }
   }
 
 }

@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OpenVidu, Session, StreamEvent, StreamManager } from 'openvidu-browser';
+import { OpenVidu, Publisher, Session, StreamEvent, StreamManager } from 'openvidu-browser';
 import { join } from 'path';
-import { catchError, from, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, from, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +11,16 @@ export class VideoCallService {
   OPENVIDU_SERVER_URL = 'https://' + location.hostname + ':4443';
   OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
-  OV: OpenVidu | undefined;
+  OV!: OpenVidu;
   session!: Session;
   publisher: StreamManager | undefined;
   subscribers: StreamManager[] = [];
 
   sessionId: string = Math.round((new Date()).getTime() / 1000).toString();
-  userName: string = Math.round((new Date()).getTime() / 1000).toString();;
+  userName: string = Math.round((new Date()).getTime() / 1000).toString();
+
+  users$ = new BehaviorSubject<StreamManager[]>(new Array<StreamManager>());
+  currentUser$ = new BehaviorSubject<StreamManager | undefined>(undefined);
 
   constructor(private httpClient: HttpClient) { }
 
@@ -33,9 +36,26 @@ export class VideoCallService {
         return from(this.session.connect(token, { clientData: this.userName }))
       }),
       tap(() => {
-        console.log('connection ready');
+        this.initPublisher();
       })
     ).subscribe();
+  }
+
+  initPublisher() {
+    const publisher: Publisher = this.OV.initPublisher('', {
+      audioSource: undefined,
+      videoSource: undefined,
+      publishAudio: true,
+      publishVideo: true,
+      resolution: '640x480',
+      frameRate: 30,
+      insertMode: 'APPEND',
+      mirror: false
+    });
+
+    this.session.publish(publisher);
+    this.publisher = publisher;
+    this.currentUser$.next(publisher);
   }
 
   subscribeSessionEvents() {

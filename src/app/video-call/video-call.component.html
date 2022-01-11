@@ -1,6 +1,6 @@
 <div class="video-content video-content-grid-4">
-  <div>
-    <app-ov-video></app-ov-video>
+  <div *ngIf='currentUser'>
+    <app-ov-video [stream]='currentUser'></app-ov-video>
   </div>
   <div>
     <app-ov-video></app-ov-video>
