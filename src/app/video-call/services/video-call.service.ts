@@ -13,7 +13,8 @@ export class VideoCallService {
 
   OV!: OpenVidu;
   session!: Session;
-  publisher: StreamManager | undefined;
+  publisher!: Publisher;
+  screenPublisher!: Publisher;
   subscribers: StreamManager[] = [];
 
   sessionId: string = Math.round((new Date()).getTime() / 1000).toString();
@@ -22,12 +23,13 @@ export class VideoCallService {
   users$ = new BehaviorSubject<StreamManager[]>(new Array<StreamManager>());
   currentUser$ = new BehaviorSubject<StreamManager | undefined>(undefined);
 
+  videoEnabled = true;
+
   constructor(private httpClient: HttpClient) { }
 
   join() {
     this.OV = new OpenVidu();
     this.session = this.OV.initSession();
-
     this.subscribeSessionEvents();
 
     from(this.getToken())
@@ -41,10 +43,42 @@ export class VideoCallService {
     ).subscribe();
   }
 
+  enableVideo() {
+    this.publisher!.publishVideo(true);
+    this.videoEnabled = true;
+  }
+
+  disableVideo() {
+    this.publisher!.publishVideo(false);
+    this.videoEnabled = false;
+  }
+
+  shareScreen() {
+    this.initScreenPublisher();
+    
+  }
+
   initPublisher() {
     const publisher: Publisher = this.OV.initPublisher('', {
       audioSource: undefined,
       videoSource: undefined,
+      publishAudio: true,
+      publishVideo: true,
+      resolution: '640x480',
+      frameRate: 30,
+      insertMode: 'APPEND',
+      mirror: false
+    });
+
+    this.session.publish(publisher);
+    this.publisher = publisher;
+    this.currentUser$.next(publisher);
+  }
+
+  initScreenPublisher() {
+    const publisher: Publisher = this.OV.initPublisher('', {
+      audioSource: undefined,
+      videoSource: 'screen',
       publishAudio: true,
       publishVideo: true,
       resolution: '640x480',

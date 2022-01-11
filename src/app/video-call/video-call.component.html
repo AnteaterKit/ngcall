@@ -7,9 +7,9 @@
   </div>
 </div>
 <div class="video-tools">
-  <div class="video-tools__button video-tools__button-join" (click)='join()'>Join</div>
-  <div class="video-tools__button video-tools__button-end">End</div>
-  <div class="video-tools__button video-tools__button-video">Video</div>
+  <div *ngIf='!joined' class="video-tools__button video-tools__button-join" (click)='join()'>Join</div>
+  <div  *ngIf='joined'  class="video-tools__button video-tools__button-end">End</div>
+  <div class="video-tools__button video-tools__button-video"  (click)='changeVideoState()'>Video</div>
   <div class="video-tools__button video-tools__button-audio">Audio</div>
-  <div class="video-tools__button video-tools__button-audio">Share</div>
+  <div class="video-tools__button video-tools__button-audio" (click)='share()'>Share</div>
 </div>

@@ -9,6 +9,7 @@ import { VideoCallService } from './services/video-call.service';
   styleUrls: ['./video-call.component.scss']
 })
 export class VideoCallComponent implements OnInit {
+  joined = false;
   users: StreamManager[] = [];
   currentUser: StreamManager  | undefined = undefined;
   constructor(private videoCallService: VideoCallService) { }
@@ -34,5 +35,19 @@ export class VideoCallComponent implements OnInit {
         this.users = x;
       })
     ).subscribe();
+
+    this.joined = true;
+  }
+
+  changeVideoState() {
+    if (this.videoCallService.videoEnabled) {
+      this.videoCallService.disableVideo();
+    } else {
+      this.videoCallService.enableVideo();
+    }
+  }
+
+  share() {
+    this.videoCallService.shareScreen();
   }
 }
