@@ -1,0 +1,27 @@
+.video-content {
+    height: 90vh;
+    overflow: scroll;
+}
+.video-content-grid-1 {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 80%;
+    gap: 15px 10px;
+    padding: 24px;
+}
+
+.video-content-grid-2 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 80%;
+    gap: 15px 10px;
+    padding: 24px;
+}
+
+.video-content-grid-3 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 80%;
+    gap: 15px 10px;
+    padding: 24px;
+}
