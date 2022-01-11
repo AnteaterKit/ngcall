@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StreamManager } from 'openvidu-browser';
 import { filter, tap } from 'rxjs';
 import { VideoCallService } from './services/video-call.service';
@@ -12,9 +13,16 @@ export class VideoCallComponent implements OnInit {
   joined = false;
   users: StreamManager[] = [];
   currentUser: StreamManager  | undefined = undefined;
-  constructor(private videoCallService: VideoCallService) { }
+  userId: string = '';
+  constructor(
+    private videoCallService: VideoCallService,
+    private route: ActivatedRoute
+    ) { }
 
   ngOnInit() {
+    this.userId = this.route.snapshot.queryParams['userId'];
+    console.log('sdsdsdsd');
+    this.videoCallService.setDevice(this.userId);
   }
 
   join() {

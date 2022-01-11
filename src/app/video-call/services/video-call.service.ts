@@ -11,24 +11,40 @@ export class VideoCallService {
   OPENVIDU_SERVER_URL = 'https://' + location.hostname + ':4443';
   OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
-  OV!: OpenVidu;
+  OV: OpenVidu = new OpenVidu();
   session!: Session;
   publisher!: Publisher;
   screenPublisher!: Publisher;
   subscribers: StreamManager[] = [];
 
-  sessionId: string = Math.round((new Date()).getTime() / 1000).toString();
+  sessionId: string = '7979798'; //Math.round((new Date()).getTime() / 1000).toString();
   userName: string = Math.round((new Date()).getTime() / 1000).toString();
 
   users$ = new BehaviorSubject<StreamManager[]>(new Array<StreamManager>());
   currentUser$ = new BehaviorSubject<StreamManager | undefined>(undefined);
-
   videoEnabled = true;
+  deviceId = '';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+  }
+
+  setDevice(userId: string) {
+    from(this.OV.getDevices())
+    .pipe(
+      tap(x => {
+        console.log('dev ', x);
+        const videoDevices = x.filter(x => x.kind === 'videoinput');
+        console.log();
+        if (userId === '1') {
+          this.deviceId = videoDevices[0].deviceId;
+        } else {
+          this.deviceId = videoDevices[1].deviceId; 
+        }
+      })
+    ).subscribe();
+  }
 
   join() {
-    this.OV = new OpenVidu();
     this.session = this.OV.initSession();
     this.subscribeSessionEvents();
 
@@ -55,13 +71,13 @@ export class VideoCallService {
 
   shareScreen() {
     this.initScreenPublisher();
-    
+
   }
 
   initPublisher() {
     const publisher: Publisher = this.OV.initPublisher('', {
       audioSource: undefined,
-      videoSource: undefined,
+      videoSource: this.deviceId,
       publishAudio: true,
       publishVideo: true,
       resolution: '640x480',
@@ -100,7 +116,15 @@ export class VideoCallService {
     });
 
     this.session.on('streamDestroyed', (event: any) => {
-     
+     // Удалить пользователя с конференции
+    });
+
+    this.session.on('publisherStartSpeaking', (event: any) => {
+      // пробросить событие и подстветить юзера с event.connection.connectionId
+    });
+
+    this.session.on('publisherStopSpeaking', (event: any) => {
+      // пробросить событие и подстветить 
     });
   }
 
