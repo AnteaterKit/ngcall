@@ -34,6 +34,7 @@ export class VideoCallService {
       tap(x => {
         console.log('dev ', x);
         const videoDevices = x.filter(x => x.kind === 'videoinput');
+        // videoDevices[0].
         console.log();
         if (userId === '1') {
           this.deviceId = videoDevices[0].deviceId;

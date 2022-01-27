@@ -15,7 +15,7 @@ export class VideoCallComponent implements OnInit {
   currentUser: StreamManager  | undefined = undefined;
   userId: string = '';
   constructor(
-    private videoCallService: VideoCallService,
+    public videoCallService: VideoCallService,
     private route: ActivatedRoute
     ) { }
 

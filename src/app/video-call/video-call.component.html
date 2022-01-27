@@ -7,9 +7,10 @@
   </div>
 </div>
 <div class="video-tools">
-  <div *ngIf='!joined' class="video-tools__button video-tools__button-join" (click)='join()'>Join</div>
-  <div  *ngIf='joined'  class="video-tools__button video-tools__button-end">End</div>
-  <div class="video-tools__button video-tools__button-video"  (click)='changeVideoState()'>Video</div>
-  <div class="video-tools__button video-tools__button-audio">Audio</div>
-  <div class="video-tools__button video-tools__button-audio" (click)='share()'>Share</div>
+  <div *ngIf='!joined' class="video-tools__button video-tools__button-join" (click)='join()'> <i class="material-icons">call</i></div>
+  <div  *ngIf='joined'  class="video-tools__button video-tools__button-end"><i class="material-icons">cancel</i></div>
+  <div *ngIf='videoCallService.videoEnabled' class="video-tools__button video-tools__button-video"  (click)='changeVideoState()'><i class="material-icons">camera_alt</i></div>
+  <div *ngIf='!videoCallService.videoEnabled' class="video-tools__button video-tools__button-video"  (click)='changeVideoState()'><i class="material-icons">camera_enhance</i></div>
+  <div class="video-tools__button video-tools__button-audio"><i class="material-icons">volume_up</i></div>
+  <div class="video-tools__button video-tools__button-audio" (click)='share()'><i class="material-icons">screen_share</i></div>
 </div>
